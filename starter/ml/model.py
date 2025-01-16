@@ -1,4 +1,5 @@
 from sklearn.metrics import fbeta_score, precision_score, recall_score
+from sklearn.ensemble import RandomForestClassifier
 
 
 # Optional: implement hyperparameter tuning.
@@ -18,7 +19,9 @@ def train_model(X_train, y_train):
         Trained machine learning model.
     """
 
-    pass
+    model = RandomForestClassifier()
+    model.fit(X_train, y_train)
+    return model
 
 
 def compute_model_metrics(y, preds):
@@ -44,7 +47,7 @@ def compute_model_metrics(y, preds):
 
 
 def inference(model, X):
-    """ Run model inferences and return the predictions.
+    """Run model inferences and return the predictions.
 
     Inputs
     ------
@@ -58,3 +61,42 @@ def inference(model, X):
         Predictions from the model.
     """
     pass
+
+
+def performance_on_slices(model, data, cat_features, label):
+    """
+    Outputs the performance of the model on slices of the data.
+
+    Inputs
+    ------
+    model : Trained machine learning model.
+    data : pd.DataFrame
+        Dataframe containing the features and label.
+    cat_features: list[str]
+        List containing the names of the categorical features.
+    label : str
+        Name of the label column in `data`.
+
+    Returns
+    -------
+    performance : dict
+        Dictionary containing the performance metrics for each slice.
+    """
+    performance = {}
+    for feature in cat_features:
+        for category in data[feature].unique():
+            slice_data = data[data[feature] == category]
+            X_slice, y_slice, _, _ = process_data(
+                slice_data,
+                categorical_features=cat_features,
+                label=label,
+                training=False,
+            )
+            preds = inference(model, X_slice)
+            precision, recall, fbeta = compute_model_metrics(y_slice, preds)
+            performance[f"{feature}_{category}"] = {
+                "precision": precision,
+                "recall": recall,
+                "fbeta": fbeta,
+            }
+    return performance
