@@ -13,14 +13,14 @@ from main import app
 client = TestClient(app)
 
 
-def basic_test():
+def test_sanity():
     """Test the root welcome page"""
     r = client.get("/")
     assert r.status_code == 200
     assert r.json() == {"message": "Hello World"}
 
 
-def example_test():
+def test_with_fake_data():
     """Test the output for salary is >50k"""
 
     r = client.post(

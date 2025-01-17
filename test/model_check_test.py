@@ -26,14 +26,14 @@ cat_features = [
 ]
 
 
-def model_test():
+def test_basic_model():
     """Test Random Forest model"""
 
     model = joblib.load("model/model.pkl")
     assert isinstance(model, RandomForestClassifier)
 
 
-def data_test():
+def test_data_fullness():
     """Test data csv"""
 
     data = pd.read_csv("data/cleaned_census.csv")
