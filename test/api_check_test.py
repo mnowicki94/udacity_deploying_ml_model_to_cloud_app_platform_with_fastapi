@@ -17,7 +17,7 @@ def test_sanity():
     """Test the root welcome page"""
     r = client.get("/")
     assert r.status_code == 200
-    assert r.json() == {"message": "Hello World"}
+    assert r.json() == {"message": "Hiiii World"}
 
 
 def test_with_fake_data():
