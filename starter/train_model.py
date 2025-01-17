@@ -1,4 +1,22 @@
 """
+
+This script reads cleaned census data, preprocesses it, trains a machine learning model, evaluates the model, and saves the trained model and encoders.
+
+Functions:
+- process_data: Preprocesses the data by encoding categorical features and scaling numerical features.
+- train_model: Trains a machine learning model using the provided training data.
+- compute_model_metrics: Computes precision, recall, and F-beta score for the model predictions.
+- inference: Generates predictions using the trained model.
+
+Workflow:
+1. Reads cleaned census data from a CSV file.
+2. Splits the data into training and testing sets.
+3. Defines categorical features for preprocessing.
+4. Preprocesses the training and testing data.
+5. Trains a machine learning model using the training data.
+6. Evaluates the model using the testing data.
+7. Logs the model performance metrics.
+8. Saves the trained model and encoders to disk.
 Author: Maciej Nowicki
 Date: January 2025
 Desc: model training file for machine learning model
@@ -20,7 +38,7 @@ logger = logging.getLogger()
 
 # Read and preprocess data
 logger.info("Reading clean data")
-data = pd.read_csv("data/census_clean.csv")
+data = pd.read_csv("data/cleaned_census.csv")
 
 # Split data into training and testing sets
 train, test = train_test_split(data, test_size=0.20, random_state=42)
