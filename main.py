@@ -1,7 +1,7 @@
 """
 Author: Maciej Nowicki
 Date: January 2025
-Desc: Main file for FastAPI
+Description: Main file for FastAPI application
 """
 
 import pandas as pd
@@ -12,7 +12,8 @@ from pydantic import BaseModel, Field
 from starter.ml.data import process_data
 from starter.ml.model import inference
 
-cat_features = [
+# Define categorical features
+categorical_features = [
     "workclass",
     "education",
     "marital-status",
@@ -24,54 +25,20 @@ cat_features = [
 ]
 
 
-class TaggedItem(BaseModel):
-    age: int = Field(examples=[39])
-    workclass: str = Field(examples=["State-gov"])
-    fnlgt: int = Field(examples=[77516])
-    education: str = Field(examples=["Bachelors"])
-    education_num: int = Field(alias="education-num", examples=[13])
-    marital_status: str = Field(alias="marital-status", examples=["Never-married"])
-    occupation: str = Field(examples=["Adm-clerical"])
-    relationship: str = Field(examples=["Not-in-family"])
-    race: str = Field(examples=["White"])
-    sex: str = Field(examples=["Male"])
-    capital_gain: int = Field(alias="capital-gain", examples=[2174])
-    capital_loss: int = Field(alias="capital-loss", examples=[0])
-    hours_per_week: int = Field(alias="hours-per-week", examples=[40])
-    native_country: str = Field(alias="native-country", examples=["United-States"])
-
-
-# load model
-model = joblib.load("model/model.pkl")
-encoder = joblib.load("model/encoder.pkl")
-lb = joblib.load("model/lb.pkl")
-
-# create app
-app = FastAPI()
-
-
-@app.get("/")
-async def hello():
-    return {"message": "Hello World"}
-
-
-@app.post("/prediction")
-async def predict(input_data: TaggedItem):
-    data = pd.DataFrame(
-        {k: v for k, v in input_data.dict(by_alias=True).items()}, index=[0]
-    )
-    X, _, _, _ = process_data(
-        data,
-        categorical_features=cat_features,
-        label=None,
-        training=False,
-        encoder=encoder,
-        lb=lb,
-    )
-    y_pred = inference(model, X)
-
-    return {"Predicted Income": lb.inverse_transform(y_pred)[0]}
-
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=5000, reload=True)
+# Define the data model for input
+class InputData(BaseModel):
+    # Define the input data model
+    age: int = Field(example=23)
+    workclass: str = Field(example="State-gov")
+    fnlgt: int = Field(example=55789)
+    education: str = Field(example="Bachelors")
+    education_num: int = Field(alias="education-num", example=11)
+    marital_status: str = Field(alias="marital-status", example="Never-married")
+    occupation: str = Field(example="Adm-clerical")
+    relationship: str = Field(example="Not-in-family")
+    race: str = Field(example="White")
+    sex: str = Field(example="Female")
+    capital_gain: int = Field(alias="capital-gain", example=2474)
+    capital_loss: int = Field(alias="capital-loss", example=2)
+    hours_per_week: int = Field(alias="hours-per-week", example=45)
+    native_country: str = Field(alias="native-country", example="United-States")
