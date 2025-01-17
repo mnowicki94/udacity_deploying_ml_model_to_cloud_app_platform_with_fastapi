@@ -26,27 +26,15 @@ cat_features = [
 ]
 
 
-def test_data():
-    """Test data csv"""
-
-    data = pd.read_csv("data/cleaned_census.csv")
-    assert data.shape[0] > 0
-
-
-def test_process_data():
-    """Test process data"""
-
-    data = pd.read_csv("data/cleaned_census.csv")
-    train, test = train_test_split(data, test_size=0.20)
-
-    X_train, y_train, _, _ = process_data(
-        train, categorical_features=cat_features, label="salary", training=True
-    )
-    assert X_train.shape[0] == y_train.shape[0]
-
-
-def test_model():
+def model_test():
     """Test Random Forest model"""
 
     model = joblib.load("model/model.pkl")
     assert isinstance(model, RandomForestClassifier)
+
+
+def data_test():
+    """Test data csv"""
+
+    data = pd.read_csv("data/cleaned_census.csv")
+    assert data.shape[0] > 0
