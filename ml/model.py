@@ -1,38 +1,42 @@
-from sklearn.metrics import fbeta_score, precision_score, recall_score
+"""
+Author: Maciej Nowicki
+Date: January 2025
+Desc: mdoel file for machine learning model
+"""
+
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import fbeta_score, precision_score, recall_score
 
 
-# Optional: implement hyperparameter tuning.
 def train_model(X_train, y_train):
     """
     Trains a machine learning model and returns it.
 
-    Inputs
-    ------
+    Parameters
+    ----------
     X_train : np.array
         Training data.
     y_train : np.array
         Labels.
     Returns
     -------
-    model
+    model : RandomForestClassifier
         Trained machine learning model.
     """
-
-    model = RandomForestClassifier()
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
     return model
 
 
-def compute_model_metrics(y, preds):
+def compute_model_metrics(y_true, y_pred):
     """
     Validates the trained machine learning model using precision, recall, and F1.
 
-    Inputs
-    ------
-    y : np.array
+    Parameters
+    ----------
+    y_true : np.array
         Known labels, binarized.
-    preds : np.array
+    y_pred : np.array
         Predicted labels, binarized.
     Returns
     -------
@@ -40,18 +44,19 @@ def compute_model_metrics(y, preds):
     recall : float
     fbeta : float
     """
-    fbeta = fbeta_score(y, preds, beta=1, zero_division=1)
-    precision = precision_score(y, preds, zero_division=1)
-    recall = recall_score(y, preds, zero_division=1)
+    precision = precision_score(y_true, y_pred, zero_division=1)
+    recall = recall_score(y_true, y_pred, zero_division=1)
+    fbeta = fbeta_score(y_true, y_pred, beta=1, zero_division=1)
     return precision, recall, fbeta
 
 
 def inference(model, X):
-    """Run model inferences and return the predictions.
+    """
+    Run model inferences and return the predictions.
 
-    Inputs
-    ------
-    model : ???
+    Parameters
+    ----------
+    model : RandomForestClassifier
         Trained machine learning model.
     X : np.array
         Data used for prediction.
@@ -60,43 +65,7 @@ def inference(model, X):
     preds : np.array
         Predictions from the model.
     """
-    pass
-
-
-def performance_on_slices(model, data, cat_features, label):
-    """
-    Outputs the performance of the model on slices of the data.
-
-    Inputs
-    ------
-    model : Trained machine learning model.
-    data : pd.DataFrame
-        Dataframe containing the features and label.
-    cat_features: list[str]
-        List containing the names of the categorical features.
-    label : str
-        Name of the label column in `data`.
-
-    Returns
-    -------
-    performance : dict
-        Dictionary containing the performance metrics for each slice.
-    """
-    performance = {}
-    for feature in cat_features:
-        for category in data[feature].unique():
-            slice_data = data[data[feature] == category]
-            X_slice, y_slice, _, _ = process_data(
-                slice_data,
-                categorical_features=cat_features,
-                label=label,
-                training=False,
-            )
-            preds = inference(model, X_slice)
-            precision, recall, fbeta = compute_model_metrics(y_slice, preds)
-            performance[f"{feature}_{category}"] = {
-                "precision": precision,
-                "recall": recall,
-                "fbeta": fbeta,
-            }
-    return performance
+    if model is None:
+        raise ValueError("Model is not provided")
+    preds = model.predict(X)
+    return preds
