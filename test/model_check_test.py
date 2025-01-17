@@ -29,14 +29,14 @@ cat_features = [
 def test_data():
     """Test data csv"""
 
-    data = pd.read_csv("data/census_clean.csv")
+    data = pd.read_csv("data/cleaned_census.csv")
     assert data.shape[0] > 0
 
 
 def test_process_data():
     """Test process data"""
 
-    data = pd.read_csv("data/census_clean.csv")
+    data = pd.read_csv("data/cleaned_census.csv")
     train, test = train_test_split(data, test_size=0.20)
 
     X_train, y_train, _, _ = process_data(
