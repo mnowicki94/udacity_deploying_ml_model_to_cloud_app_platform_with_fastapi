@@ -32,16 +32,18 @@ import joblib
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.FileHandler("logs/training.log"), logging.StreamHandler()],
 )
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 # Read and preprocess data
-logger.info("Reading clean data")
-data = pd.read_csv("data/cleaned_census.csv")
+logger.info("Reading datathat were celanesd")
+df = pd.read_csv("data/cleaned_census.csv")
 
 # Split data into training and testing sets
-train, test = train_test_split(data, test_size=0.20, random_state=42)
+train, test = train_test_split(df, test_size=0.3)
 
 # Define categorical features
 cat_features = [
