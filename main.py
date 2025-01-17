@@ -57,7 +57,7 @@ async def hello():
 
 
 @app.post("/prediction")
-async def predict(input_data: TaggedItem):
+async def predict(input_data: InputData):
     data = pd.DataFrame(
         {k: v for k, v in input_data.dict(by_alias=True).items()}, index=[0]
     )
